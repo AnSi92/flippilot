@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="FlipPilot - Slimmer inkopen, slimmer verkopen.">
+<title>FlipPilot | Resell smarter</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1018;color:#f5f7fa;font-family:Inter,Arial,sans-serif}
+nav{padding:20px 7%;border-bottom:1px solid #253143;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:800}
+.logo span{color:#34d399}
+nav small{color:#34d399}
+main{max-width:1050px;margin:auto;padding:45px 20px}
+.hero{margin-bottom:35px}
+.hero p{color:#34d399;font-size:12px;font-weight:bold;letter-spacing:2px}
+h1{font-size:clamp(36px,7vw,60px);margin:12px 0}
+h1 span{color:#34d399}
+.muted{color:#9ba9bb;line-height:1.6}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+.card{background:#151e2b;border:1px solid #293647;border-radius:18px;padding:25px}
+h2{font-size:20px;margin-top:0}
+label{display:block;font-size:13px;color:#aab6c6;margin:16px 0 7px}
+input,select,textarea{width:100%;padding:13px;background:#0b1018;border:1px solid #344255;border-radius:9px;color:white;font-size:15px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.result{background:#0b1018;padding:20px;border-radius:12px;margin-top:20px}
+.result strong{display:block;font-size:36px;color:#34d399;margin-top:7px}
+button{border:0;border-radius:10px;background:#34d399;color:#06140e;font-weight:800;padding:14px;cursor:pointer;width:100%;margin-top:16px}
+button:hover{background:#6ee7b7}
+.output{white-space:pre-wrap;background:#0b1018;border-radius:10px;padding:15px;color:#d6e4df;font-size:14px;margin-top:15px}
+footer{text-align:center;padding:40px;color:#64748b;font-size:12px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+<div class="logo">FlipPilot<span>.</span></div>
+<small>NEDERLAND 🇳🇱</small>
+</nav>
+<main>
+<section class="hero">
+<p>YOUR RESALE COMMAND CENTER</p>
+<h1>Sell smarter.<br><span>Earn more.</span></h1>
+<div class="muted">Bereken je winst en maak betere advertenties voor jouw resale business.</div>
+</section>
+<div class="grid">
+<section class="card">
+<h2>📦 Product analyseren</h2>
+<label>Productnaam</label>
+<input id="product" placeholder="Bijv. Nike Air Max 90">
+<label>Productconditie</label>
+<select id="condition">
+<option>Nieuw met kaartje</option>
+<option>Zo goed als nieuw</option>
+<option>Goed</option>
+<option>Gebruikt</option>
+</select>
+<div class="row">
+<div><label>Inkoop (€)</label><input id="buy" type="number" value="20" min="0"></div>
+<div><label>Verkoop (€)</label><input id="sell" type="number" value="55" min="0"></div>
+<div><label>Kosten (€)</label><input id="cost" type="number" value="3" min="0"></div>
+</div>
+<div class="result">
+<span class="muted">Verwachte winst</span>
+<strong id="profit">€32,00</strong>
+<span class="muted" id="roi">ROI: 160%</span>
+</div>
+<button id="calculate">Bereken winst</button>
+</section>
+<section class="card">
+<h2>✨ Advertentie generator</h2>
+<p class="muted">Maak een Nederlandse advertentietekst.</p>
+<label>Extra informatie</label>
+<textarea id="details" rows="4" placeholder="Bijvoorbeeld: weinig gedragen..."></textarea>
+<button id="generate">Genereer advertentie</button>
+<div class="output" id="output">Jouw advertentie verschijnt hier.</div>
+<button id="copy">Kopieer tekst</button>
+</section>
+</div>
+</main>
+<footer>© 2026 FlipPilot · Built for smarter resellers.</footer>
+<script>
+const $=id=>document.getElementById(id);
+function calculate(){
+const buy=Number($("buy").value)||0;
+const sell=Number($("sell").value)||0;
+const cost=Number($("cost").value)||0;
+const profit=sell-buy-cost;
+$("profit").textContent=new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR"}).format(profit);
+$("profit").style.color=profit>=0?"#34d399":"#fb7185";
+$("roi").textContent="ROI: "+(buy>0?(profit/buy*100).toFixed(1):0)+"%";
+}
+$("calculate").onclick=calculate;
+["buy","sell","cost"].forEach(id=>$(id).addEventListener("input",calculate));
+$("generate").onclick=()=>{
+const name=$("product").value.trim();
+if(!name){$("output").textContent="Vul eerst een productnaam in.";return;}
+$("output").textContent=name+" – "+$("condition").value+"\n\nTe koop: "+name+".\nStaat: "+$("condition").value+".\n"+$("details").value+"\n\nStuur gerust een bericht bij interesse!";
+};
+$("copy").onclick=async()=>{
+try{
+await navigator.clipboard.writeText($("output").textContent);
+$("copy").textContent="Gekopieerd!";
+}catch(e){$("copy").textContent="Selecteer en kopieer de tekst handmatig.";}
+};
+calculate();
+</script>
+</body>
+</html>
